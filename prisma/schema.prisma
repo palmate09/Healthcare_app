@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Doctor{
+  id                  Int             @id @default(autoincrement())
+  name                String      
+  email               String          @unique
+  password            String      
+  speciallity         String 
+  degree              String  
+  expirence           Int
+  about               String
+  available           DateTime        @default(now())
+  fees                Int
+  address             String?
+  phone_number        Int             @unique
+  appointaments       Appointament[]
+}
+
+model Appointament{
+  id                 Int              @id @default(autoincrement())
+  user               User             @relation(fields: [userid], references: [id])
+  userid             Int              
+  doctor             Doctor           @relation(fields: [doctorId], references: [id])
+  doctorId           Int                        
+  slot_date          String
+  slot_time          String
+  amount             Int 
+  date               String           
+  payment            Boolean          @default(false)
+  iscompleted        Boolean          @default(false)
+  cancelled          Boolean          @default(false)
+}
+
+model User {
+  id                Int               @id @default(autoincrement())
+  name              String   
+  email             String            @unique
+  password          String
+  address           String?
+  gender            String
+  age               Int?
+  phone_number      Int               @unique
+  appointament      Appointament[]
+}
+
+
+model  Admin {
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  password          String
+}
